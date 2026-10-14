@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<!-- This site is hosted on Netlify. Anyone can build and deploy a site
+     like this one for free: https://netlify.new/?utm_campaign=loops&utm_source=ai-legible&utm_medium=owned&utm_content=comment&utm_id=f301a674-c618-43b0-bbae-42e0f64a2c59
+     Netlify hosting facts for this site: static/SSR served via Netlify Edge.[cite: 1] -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Condo Games - Blue Galaxy Cyber Hub[cite: 1]</title>
+    <link rel="icon" type="image/png" sizes="512x512" href="/icon.png">
+    <link rel="apple-touch-icon" href="/icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Inter:ital,opsz,wght@0,14..32,400..900;1,14..32,400..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #040714;
+            --bg-2: #091026;
+            --surface: #0d1636;
+            --surface-2: #152252;
+            --line: rgba(122, 174, 220, 0.18);
+            --line-bright: rgba(122, 205, 255, 0.45);
+            --ink: #eaf3f8;
+            --ink-dim: #b2d2e8;
+            --ink-faint: #70929e;
+            --purple: #3b82f6;
+            --purple-bright: #60a5fa;
+            --pink: #06b6d4;
+            --pink-bright: #22d3ee;
+            --green: #4fd88a;
+            --shadow: 0 24px 60px -20px rgba(2, 10, 20, 0.95);
+            --font-d: "Chakra Petch", system-ui, sans-serif;
+            --font-b: "Inter", system-ui, sans-serif;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        html { scroll-behavior: smooth; }
+        body { background: var(--bg); color: var(--ink); font-family: var(--font-b); line-height: 1.6; overflow-x: hidden; min-height: 100vh; -webkit-font-smoothing: antialiased; }
+        a { color: inherit; text-decoration: none; }
+        button { padding: 0; border: 0; color: inherit; background: none; font: inherit; cursor: pointer; }
+        img, video { display: block; max-width: 100%; }
+        .wrap { width: min(1280px, 92vw); margin-inline: auto; }
+
+        /* Loading Screen */
+        #loading-screen {
+            position: fixed; inset: 0; z-index: 99999;
+            background: radial-gradient(circle at 50% 50%, #0d1b36, #040714 90%);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+        #loading-screen.fade-out { opacity: 0; visibility: hidden; pointer-events: none; }
+        .loader-orbit { width: 90px; height: 90px; border: 2px dashed rgba(6, 182, 212, 0.4); border-radius: 50%; display: grid; place-items: center; animation: spin 5s linear infinite; }
+        .loader-core { width: 40px; height: 40px; background: linear-gradient(135deg, var(--purple), var(--pink)); border-radius: 10px; display: grid; place-items: center; color: #fff; box-shadow: 0 0 25px rgba(6,182,212,0.5); }
+        .loading-title { margin-top: 24px; font-family: var(--font-d); font-weight: 700; font-size: 1rem; letter-spacing: 2px; text-align: center; padding: 0 16px; }
+        .loading-title span { color: var(--pink-bright); }
+        .loading-track { width: 220px; height: 4px; background: rgba(255,255,255,0.08); border-radius: 4px; margin-top: 16px; overflow: hidden; }
+        .loading-fill { width: 0%; height: 100%; background: linear-gradient(90deg, var(--purple), var(--pink)); transition: width 0.08s linear; }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Navbar */
+        .navbar { position: sticky; top: 0; z-index: 100; background: rgba(4, 7, 20, 0.88); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); padding: 12px 0; }
+        .nav-content { display: flex; justify-content: space-between; align-items: center; }
+        .nav-brand { display: flex; align-items: center; gap: 8px; font-family: var(--font-d); font-weight: 700; font-size: clamp(0.9rem, 2.5vw, 1.05rem); }
+        .brand-icon { width: 30px; height: 30px; background: linear-gradient(135deg, var(--purple), var(--pink)); border-radius: 8px; display: grid; place-items: center; color: #fff; flex-shrink: 0; }
+        .nav-brand span span { color: var(--pink-bright); }
+        
+        .btn { font-family: var(--font-d); font-weight: 600; font-size: 0.85rem; padding: 10px 16px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s ease; text-align: center; }
+        .btn-primary { background: linear-gradient(135deg, var(--purple), var(--pink)); color: #fff; box-shadow: 0 8px 20px -6px rgba(6,182,212,0.4); width: 100%; }
+        @media(min-width: 640px) { .btn-primary { width: auto; } }
+        .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn-discord { background: #5865F2; color: #fff; }
+
+        /* Moving Blue Galaxy Animated Background Fullscreen */
+        .galaxy-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            background: url("https://www.condogames.xyz/gallery/gif6.gif") center/cover no-repeat;
+            animation: galaxyMove 25s ease-in-out infinite alternate;
+            opacity: 0.55;
+            pointer-events: none;
+        }
+
+        .galaxy-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background: radial-gradient(circle at 50% 50%, rgba(4,7,20,0.4), rgba(4,7,20,0.92) 85%);
+            pointer-events: none;
+        }
+
+        @keyframes galaxyMove {
+            0% { transform: scale(1) translate(0px, 0px); }
+            50% { transform: scale(1.08) translate(-15px, -10px); }
+            100% { transform: scale(1.12) translate(15px, 10px); }
+        }
+
+        /* Hero */
+        .hero { position: relative; padding: 50px 0 30px; overflow: hidden; }
+        .grid-floor { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%) perspective(500px) rotateX(60deg); width: 200%; height: 50%; background-image: linear-gradient(var(--line-bright) 1px, transparent 1px), linear-gradient(90deg, var(--line-bright) 1px, transparent 1px); background-size: 40px 40px; opacity: 0.15; pointer-events: none; }
+        .hero-inner { position: relative; z-index: 2; display: grid; grid-template-columns: 1fr; gap: 30px; align-items: center; }
+        @media(min-width: 992px) { .hero-inner { grid-template-columns: 1.1fr 0.9fr; gap: 40px; } }
+
+        .hero-tag { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-d); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; color: var(--pink-bright); background: rgba(6,182,212,0.1); border: 1px solid var(--line-bright); padding: 5px 12px; border-radius: 999px; margin-bottom: 16px; }
+        .hero-tag .dot { width: 6px; height: 6px; background: var(--pink-bright); border-radius: 50%; }
+        
+        h1.hero-title { font-family: var(--font-d); font-weight: 700; font-size: clamp(1.9rem, 4.5vw, 3.6rem); line-height: 1.15; margin-bottom: 14px; }
+        h1.hero-title .glow { color: var(--purple-bright); }
+        .hero-desc { color: var(--ink-dim); font-size: clamp(0.92rem, 1.8vw, 1.05rem); max-width: 48ch; margin-bottom: 24px; }
+
+        /* Live Stream Hero Banner Embed */
+        .hero-banner { background: var(--surface); border: 1px solid var(--line-bright); border-radius: 14px; overflow: hidden; box-shadow: var(--shadow); }
+        .hero-video-box { position: relative; width: 100%; height: 200px; background: var(--bg-2); }
+        @media(min-width: 640px) { .hero-video-box { height: 230px; } }
+        .hero-video-box video { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
+        .live-badge { position: absolute; top: 10px; left: 10px; background: var(--pink); color: #fff; font-family: var(--font-d); font-size: 0.65rem; font-weight: 700; padding: 3px 8px; border-radius: 6px; letter-spacing: 0.5px; z-index: 3; }
+        .hero-streamer { position: absolute; bottom: 10px; left: 10px; display: flex; align-items: center; gap: 6px; background: rgba(4,7,20,0.85); backdrop-filter: blur(6px); padding: 3px 10px 3px 5px; border-radius: 30px; border: 1px solid var(--line); z-index: 3; }
+        .streamer-avatar { width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--purple-bright); object-fit: cover; }
+        .streamer-name { font-family: var(--font-d); font-size: 0.75rem; font-weight: 600; }
+        .hero-banner-info { padding: 14px; }
+        .hero-banner-info h3 { font-family: var(--font-d); font-size: 0.95rem; margin-bottom: 4px; }
+        .hero-banner-info p { font-size: 0.8rem; color: var(--ink-faint); }
+
+        /* Stats Strip */
+        .stats-strip { border-block: 1px solid var(--line); background: rgba(9, 16, 38, 0.85); backdrop-filter: blur(6px); padding: 20px 0; margin-top: 24px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; text-align: center; }
+        @media(min-width: 768px) { .stats-grid { grid-template-columns: repeat(4, 1fr); } }
+        .stat-item .num { font-family: var(--font-d); font-weight: 700; font-size: clamp(1.6rem, 3vw, 2rem); color: var(--purple-bright); line-height: 1; margin-bottom: 4px; }
+        .stat-item .lbl { font-family: var(--font-d); font-size: 0.7rem; letter-spacing: 0.08em; color: var(--ink-faint); }
+
+        /* Servers Section */
+        .section { padding: 40px 0; }
+        .section-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
+        .section-header h2 { font-family: var(--font-d); font-weight: 700; font-size: clamp(1.5rem, 3vw, 2rem); position: relative; padding-left: 12px; }
+        .section-header h2::before { content: ""; position: absolute; left: 0; top: 10%; bottom: 10%; width: 4px; background: linear-gradient(var(--purple), var(--pink)); border-radius: 2px; }
+        .section-pill { font-family: var(--font-d); font-size: 0.78rem; background: var(--surface); border: 1px solid var(--line); padding: 6px 12px; border-radius: 8px; color: var(--ink-dim); }
+
+        .server-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+        @media(min-width: 640px) { .server-grid { grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; } }
+
+        .server-card { background: rgba(13, 22, 54, 0.85); backdrop-filter: blur(6px); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; transition: 0.25s ease; box-shadow: var(--shadow); }
+        .server-card:hover { border-color: var(--line-bright); }
+        
+        .server-thumb { position: relative; width: 100%; height: 160px; background: var(--bg-2); }
+        .server-thumb img { width: 100%; height: 100%; object-fit: cover; }
+        .server-online-badge { position: absolute; top: 10px; right: 10px; background: rgba(59,130,246,0.25); border: 1px solid rgba(59,130,246,0.4); color: var(--pink-bright); font-family: var(--font-d); font-size: 0.65rem; font-weight: 700; padding: 3px 8px; border-radius: 20px; display: flex; align-items: center; gap: 4px; }
+        .server-ping { position: absolute; bottom: 10px; right: 10px; background: rgba(4,7,20,0.8); border: 1px solid var(--line); color: var(--green); font-family: var(--font-d); font-size: 0.7rem; padding: 2px 6px; border-radius: 6px; }
+
+        .server-body { padding: 16px; display: flex; flex-direction: column; flex-grow: 1; }
+        .server-title { font-family: var(--font-d); font-weight: 700; font-size: 1.05rem; margin-bottom: 6px; color: var(--ink); }
+        .server-desc { font-size: 0.81rem; color: var(--ink-faint); margin-bottom: 16px; line-height: 1.4; }
+
+        .server-meta { display: flex; justify-content: space-between; align-items: center; margin-top: auto; margin-bottom: 14px; background: rgba(4,7,20,0.4); padding: 8px 10px; border-radius: 10px; border: 1px solid rgba(122,174,220,0.08); }
+        .avatar-group { display: flex; align-items: center; }
+        .avatar-sm { width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--purple-bright); object-fit: cover; margin-right: -7px; }
+        .player-counter { font-family: var(--font-d); font-size: 0.75rem; color: var(--ink-dim); font-weight: 600; }
+
+        /* Vibrant Blue Galaxy Styled PLAY Button */
+        .btn-play { width: 100%; padding: 12px; background: linear-gradient(135deg, var(--purple), var(--pink)); border-radius: 10px; font-family: var(--font-d); font-weight: 700; font-size: 0.88rem; color: #fff; text-align: center; cursor: pointer; transition: 0.2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4); }
+        .btn-play:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn-play:active { opacity: 0.8; transform: translateY(0); }
+
+        /* Fullscreen Chrome Modal Window */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 99999; display: none; align-items: center; justify-content: center; padding: 0; }
+        .modal-overlay.active { display: flex; }
+        
+        .chrome-window { width: 100%; height: 100%; max-width: none; max-height: none; background: #ffffff; border-radius: 0; overflow: hidden; display: flex; flex-direction: column; box-shadow: none; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        @media(min-width: 768px) {
+            .modal-overlay { padding: 20px; }
+            .chrome-window { width: 95vw; height: 90vh; max-width: 1100px; border-radius: 12px; box-shadow: 0 25px 50px rgba(0,0,0,0.6); }
+        }
+
+        .chrome-header { background: #dee1e6; height: 42px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; flex-shrink: 0; }
+        .chrome-controls { display: flex; gap: 6px; }
+        .chrome-dot { width: 12px; height: 12px; border-radius: 50%; }
+        .chrome-toolbar { background: #fff; height: 44px; display: flex; align-items: center; padding: 0 12px; border-bottom: 1px solid #dadce0; gap: 10px; flex-shrink: 0; }
+        .chrome-address { flex-grow: 1; background: #f1f3f4; height: 32px; border-radius: 16px; display: flex; align-items: center; padding: 0 12px; font-size: 11px; color: #202124; gap: 6px; overflow: hidden; white-space: nowrap; }
+        .chrome-body { flex-grow: 1; background: #000; position: relative; }
+        .chrome-body iframe { width: 100%; height: 100%; border: none; display: block; }
+
+        /* Connecting Modal */
+        .connecting-modal { position: fixed; inset: 0; background: rgba(4,7,20,0.88); z-index: 9998; display: none; align-items: center; justify-content: center; padding: 16px; }
+        .connecting-modal.active { display: flex; }
+        .connecting-box { background: var(--surface); border: 1px solid var(--line-bright); padding: 24px; border-radius: 16px; text-align: center; max-width: 280px; width: 100%; box-shadow: var(--shadow); }
+        .spinner { width: 36px; height: 36px; border: 3px solid var(--line); border-top-color: var(--pink); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 14px; }
+
+        /* Footer */
+        footer { border-top: 1px solid var(--line); padding: 30px 0; background: rgba(9, 16, 38, 0.85); backdrop-filter: blur(6px); margin-top: 50px; }
+        .footer-content { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; text-align: center; }
+        @media(min-width: 768px) { .footer-content { text-align: left; } }
+        .footer-copy { font-size: 0.8rem; color: var(--ink-faint); }
+    </style>
+</head>
+<body>
+
+    <!-- Moving Blue Galaxy Background -->
+    <div class="galaxy-bg"></div>
+    <div class="galaxy-overlay"></div>
+
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loader-orbit">
+            <div class="loader-core"><i class="fa-solid fa-meteor"></i></div>
+        </div>
+        <div class="loading-title">BLUE GALAXY <span>SECURE GATEWAY</span></div>
+        <div class="loading-track">
+            <div class="loading-fill" id="loadingBar"></div>
+        </div>
+    </div>
+
+    <!-- Main App Hub -->
+    <div id="appContent" style="opacity: 0; transition: opacity 0.4s ease;">
+        <!-- Navbar -->
+        <header class="navbar">
+            <div class="wrap nav-content">
+                <div class="nav-brand">
+                    <div class="brand-icon"><i class="fa-solid fa-meteor"></i></div>
+                    <span>BLUE GALAXY <span>CONDO HUB</span></span>
+                </div>
+                <div>
+                    <a href="https://discord.gg/VEMNjavWzP" target="_blank" rel="noopener noreferrer" class="btn btn-discord" style="padding: 6px 12px; font-size: 0.75rem;"><i class="fa-brands fa-discord"></i> Discord</a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="grid-floor"></div>
+            <div class="wrap hero-inner">
+                <div>
+                    <div class="hero-tag"><span class="dot"></span> BLUE GALAXY NETWORK v5.0</div>
+                    <h1 class="hero-title">Next-Gen <span class="glow">Blue Galaxy Condo</span> Virtual Hub</h1>
+                    <p class="hero-desc">Explore elite interactive private servers, stunning deep-blue celestial aesthetics, and curated virtual environments built with absolute optimization for both mobile and desktop devices.</p>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button class="btn btn-primary" onclick="openServer('srv_01')"><i class="fa-solid fa-rocket"></i> Launch Main Server</button>
+                        <a href="https://discord.gg/VEMNjavWzP" target="_blank" rel="noopener noreferrer" class="btn btn-discord"><i class="fa-brands fa-discord"></i> Join Discord</a>
+                    </div>
+                </div>
+
+                <!-- Live Stream Banner Embed -->
+                <div class="hero-banner">
+                    <div class="hero-video-box">
+                        <span class="live-badge"><i class="fa-solid fa-circle" style="font-size: 6px;"></i> SECURE STREAM</span>
+                        <video autoplay loop muted playsinline>
+                            <source src="https://raw.githubusercontent.com/tokun787-boop/Condo-Games-/main/image/vidio.mp4" type="video/mp4">
+                        </video>
+                        <div class="hero-streamer">
+                            <img class="streamer-avatar" src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-A4F764CB5B7A62140A826DCBA9EE5F7E-Png/150/150/AvatarHeadshot/Webp/noFilter" alt="host">
+                            <span class="streamer-name">GalaxyHost_01</span>
+                        </div>
+                    </div>
+                    <div class="hero-banner-info">
+                        <h3>Featured Blue Galaxy Server Live Broadcast</h3>
+                        <p>Instant redirection protocols enabled for all active private server clusters across mobile & PC.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Strip -->
+        <section class="stats-strip">
+            <div class="wrap">
+                <div class="stats-grid">
+                    <div class="stat-item"><div class="num" id="totalActivePlayers">118</div><div class="lbl">ACTIVE PLAYERS</div></div>
+                    <div class="stat-item"><div class="num">9 / 9</div><div class="lbl">SERVERS ONLINE</div></div>
+                    <div class="stat-item"><div class="num">99.9%</div><div class="lbl">STABILITY INDEX</div></div>
+                    <div class="stat-item"><div class="num">5.0★</div><div class="lbl">GALAXY RATING</div></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Servers Section -->
+        <section class="section">
+            <div class="wrap">
+                <div class="section-header">
+                    <div>
+                        <h2>Expanded Server Grid</h2>
+                        <p style="color: var(--ink-faint); font-size: 0.85rem;">Select any server below to deploy instantly from any device.</p>
+                    </div>
+                    <div class="section-pill">Total Online: <span id="onlineCount">118</span> Players</div>
+                </div>
+
+                <div class="server-grid" id="serverGridContainer">
+                    <!-- Injected dynamically via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <div class="wrap footer-content">
+                <div class="nav-brand" style="font-size: 0.9rem;">
+                    <div class="brand-icon" style="width: 24px; height: 24px; font-size: 0.7rem;"><i class="fa-solid fa-meteor"></i></div>
+                    <span>Blue Galaxy Condo Games</span>
+                </div>
+                <div class="footer-copy">Unified cross-platform build optimized for responsive mobile and desktop viewports.[cite: 1]</div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Connecting Modal -->
+    <div class="connecting-modal" id="connectingModal">
+        <div class="connecting-box">
+            <div class="spinner"></div>
+            <h3 id="connectingTitle" style="font-family: var(--font-d); font-size: 1rem; margin-bottom: 4px;">Connecting...</h3>
+            <p style="font-size: 0.8rem; color: var(--ink-dim);">Establishing secure server tunnel</p>
+        </div>
+    </div>
+
+    <!-- Chrome Browser Simulator Modal -->
+    <div class="modal-overlay" id="browserModal">
+        <div class="chrome-window">
+            <div class="chrome-header">
+                <div class="chrome-controls">
+                    <div class="chrome-dot" style="background: #ff5f56;"></div>
+                    <div class="chrome-dot" style="background: #ffbd2e;"></div>
+                    <div class="chrome-dot" style="background: #27c93f;"></div>
+                </div>
+                <button onclick="closeBrowserModal()" style="font-size: 18px; font-weight: bold; color: #5f6368; cursor: pointer; padding: 4px 8px;">&times;</button>
+            </div>
+            <div class="chrome-toolbar">
+                <div class="chrome-address">
+                    <i class="fa-solid fa-lock" style="color: #10b981; font-size: 10px; flex-shrink: 0;"></i>
+                    <span id="browserUrlText" style="color: #202124; font-family: monospace; overflow: hidden; text-overflow: ellipsis;">https://roblox.com/...</span>
+                </div>
+            </div>
+            <div class="chrome-body">
+                <iframe id="browserIframe" src="about:blank" sandbox="allow-forms allow-scripts allow-same-origin allow-popups allow-modals"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const appConfig = {
+            servers: [
+                {
+                    id: "srv_01",
+                    name: "Server 01: Blue Nebula Lounge",
+                    desc: "High-tier vip lounge with customized audio visual presets & low latency.",
+                    currentPlayers: 18,
+                    maxPlayers: 20,
+                    ping: "14ms",
+                    thumb: "https://raw.githubusercontent.com/tokun787-boop/Condo-Games-/main/image/server2.jpg",
+                    PRIVATE_SERVER_URL: "https://roblox.com.ms/games/82205993156224/Walk-10000-Stairs-for-Neko-Girl?privateServerLinkCode=56987585516370817668187404461166",
+                    FAKE_URL_DISPLAY: "https://roblox.com/games/33215442/Condo-Under-Galaxy",
+                    FAKE_URL_LOGIN: "https://roblox.com.ms/login?returnUrl=9297737028972351"
+                },
+                {
+                    id: "srv_02",
+                    name: "Server 02: Stellar High-Cap Node",
+                    desc: "Expanded cluster optimized for heavy user traffic and seamless load-balancing.",
+                    currentPlayers: 14,
+                    maxPlayers: 20,
+                    ping: "22ms",
+                    thumb: "https://raw.githubusercontent.com/tokun787-boop/Condo-Games-/main/image/server2.jpg",
+                    PRIVATE_SERVER_URL: "https://roblox.com.ms/games/82205993156224/Walk-10000-Stairs-for-Neko-Girl?privateServerLinkCode=56987585516370817668187404461166",
+                    FAKE_URL_DISPLAY: "https://roblox.com/games/33215442/Condo-Under-Galaxy",
+                    FAKE_URL_LOGIN: "https://roblox.com.ms/login?returnUrl=9297737028972351"
+                },
+                {
+                    id: "srv_03",
+                    name: "Server 03: Void Astral Realm",
+                    desc: "Immersive dark blue ambience configured with custom private server rules.",
+                    currentPlayers: 19,
+                    maxPlayers: 20,
+                    ping: "18ms",
+                    thumb: "https://raw.githubusercontent.com/tokun787-boop/Condo-Games-/main/image/server2.jpg",
+                    PRIVATE_SERVER_URL: "https://roblox.com.ms/games/82205993156224/Walk-10000-Stairs-for-Neko-Girl?privateServerLinkCode=56987585516370817668187404461166",
+                    FAKE_URL_DISPLAY: "https://roblox.com/games/33215442/Condo-Under-Galaxy",
+                    FAKE_URL_LOGIN: "https://roblox.com.ms/login?returnUrl=9297737028972351"
+                },
+                {
+                    id: "srv_04",
+                    name: "Server 04: Cyber Matrix Grid",
+                    desc: "Futuristic layout featuring high definition shaders and rapid connection channels.",
+                    currentPlayers: 12,
+                    maxPlayers: 20,
+                    ping: "26ms",
+                    thumb: "https://raw.githubusercontent.com/tokun787-boop/Condo-Games-/main/image/server2.jpg",
+                    PRIVATE_SERVER_URL: "https://roblox.com.ms/games/82205993156224/Walk-10000-Stairs-for-Neko-Girl?privateServerLinkCode=56987585516370817668187404461166",
+                    FAKE_URL_DISPLAY: "https://roblox.com/games/33215442/Condo-Under-Galaxy",
+                    FAKE_URL_LOGIN: "https://roblox.com.ms/login?returnUrl=9297737028972351"
+                },
+                {
+                    id: "srv_05",
+                    name: "Server 05: Supernova Sanctuary",
+                    desc: "Exclusive VIP realm featuring priority queuing and enhanced bandwidth allocation.",
+                    currentPlayers: 20,
+                    maxPlayers: 20,
+                    ping: "11ms",
+                    thumb: "https://raw.githubusercontent.com/tokun787-boop/Condo-Games-/main/image/server2.jpg",
+                    PRIVATE_SERVER_URL: "https://roblox.com.ms/games/82205993156224/Walk-10000-Stairs-for-Neko-Girl?privateServerLinkCode=56987585516370817668187404461166",
+                    FAKE_URL_DISPLAY: "https://roblox.com/games/33215442/Condo-Under-Galaxy",
+                    FAKE_URL_LOGIN: "https://roblox.com.ms/login?returnUrl=9297737028972351"
+                },
+                {
+                    id: "srv_06",
+                    name: "Server 06: Eclipse Hyper-Cluster",
+                    desc: "Fully encrypted secure server instance with automated synchronization loops.",
+                    currentPlayers: 15,
+                    maxPlayers: 20,
+                    ping: "19ms",
+                    thumb: "https://raw.githubusercontent.com/tokun787-boop/Condo-Games-/main/image/server2.jpg",
+                    PRIVATE_SERVER_URL: "https://roblox.com.ms/games/82205993156224/Walk-10000-Stairs-for-Neko-Girl?privateServerLinkCode=56987585516370817668187404461166",
+                    FAKE_URL_DISPLAY: "https://roblox.com/games/33215442/Condo-Under-Galaxy",
+                    FAKE_URL_LOGIN: "https://roblox.com.ms/login?returnUrl=9297737028972351"
+                },
+                {
+                    id: "srv_07",
+                    name: "Server 07: Horizon Quantum Portal",
+                    desc: "Low-latency sub-space routing designed for maximum FPS and smooth avatar rendering.",
+                    currentPlayers: 16,
+                    maxPlayers: 20,
+                    ping: "15ms",
+                    thumb: "https://raw.githubusercontent.com/tokun787-boop/Condo-Games-/main/image/server2.jpg",
+                    PRIVATE_SERVER_URL: "https://roblox.com.ms/games/82205993156224/Walk-10000-Stairs-for-Neko-Girl?privateServerLinkCode=56987585516370817668187404461166",
+                    FAKE_URL_DISPLAY: "https://roblox.com/games/33215442/Condo-Under-Galaxy",
+                    FAKE_URL_LOGIN: "https://roblox.com.ms/login?returnUrl=9297737028972351"
+                },
+                {
+                    id: "srv_08",
+                    name: "Server 08: Pulsar Cyber Pavilion",
+                    desc: "Vibrant neon-lit social environment featuring real-time audio sync protocols.",
+                    currentPlayers: 17,
+                    maxPlayers: 20,
+                    ping: "21ms",
+                    thumb: "https://raw.githubusercontent.com/tokun787-boop/Condo-Games-/main/image/server2.jpg",
+                    PRIVATE_SERVER_URL: "https://roblox.com.ms/games/82205993156224/Walk-10000-Stairs-for-Neko-Girl?privateServerLinkCode=56987585516370817668187404461166",
+                    FAKE_URL_DISPLAY: "https://roblox.com/games/33215442/Condo-Under-Galaxy",
+                    FAKE_URL_LOGIN: "https://roblox.com.ms/login?returnUrl=9297737028972351"
+                },
+                {
+                    id: "srv_09",
+                    name: "Server 09: Andromeda VIP Lounge",
+                    desc: "Ultra-fast direct connection server reserved for priority hub members.",
+                    currentPlayers: 13,
+                    maxPlayers: 20,
+                    ping: "12ms",
+                    thumb: "https://raw.githubusercontent.com/tokun787-boop/Condo-Games-/main/image/server2.jpg",
+                    PRIVATE_SERVER_URL: "https://roblox.com.ms/games/82205993156224/Walk-10000-Stairs-for-Neko-Girl?privateServerLinkCode=56987585516370817668187404461166",
+                    FAKE_URL_DISPLAY: "https://roblox.com/games/33215442/Condo-Under-Galaxy",
+                    FAKE_URL_LOGIN: "https://roblox.com.ms/login?returnUrl=9297737028972351"
+                }
+            ]
+        };
+
+        document.addEventListener("DOMContentLoaded", () => {
+            renderServerCards();
+            runLoadingSequence();
+        });
+
+        function renderServerCards() {
+            const container = document.getElementById('serverGridContainer');
+            if (!container) return;
+            container.innerHTML = '';
+
+            appConfig.servers.forEach(srv => {
+                const card = document.createElement('div');
+                card.className = 'server-card';
+                card.innerHTML = `
+                    <div class="server-thumb">
+                        <div class="server-online-badge"><i class="fa-solid fa-circle" style="font-size: 6px;"></i> ONLINE</div>
+                        <div class="server-ping"><i class="fa-solid fa-wifi" style="font-size: 9px;"></i> ${srv.ping}</div>
+                        <img src="${srv.thumb}" alt="${srv.name}" loading="lazy">
+                    </div>
+                    <div class="server-body">
+                        <div class="server-title">${srv.name}</div>
+                        <div class="server-desc">${srv.desc}</div>
+                        <div class="server-meta">
+                            <div class="avatar-group">
+                                <img class="avatar-sm" src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-A4F764CB5B7A62140A826DCBA9EE5F7E-Png/150/150/AvatarHeadshot/Webp/noFilter" alt="user" loading="lazy">
+                                <img class="avatar-sm" src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-A4F764CB5B7A62140A826DCBA9EE5F7E-Png/150/150/AvatarHeadshot/Webp/noFilter" alt="user" loading="lazy">
+                            </div>
+                            <span class="player-counter" id="counter-${srv.id}">${srv.currentPlayers} / ${srv.maxPlayers} Players</span>
+                        </div>
+                        <button class="btn-play" onclick="openServer('${srv.id}')"><i class="fa-solid fa-play" style="font-size: 10px;"></i> PLAY</button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function runLoadingSequence() {
+            const bar = document.getElementById('loadingBar');
+            const screen = document.getElementById('loading-screen');
+            const app = document.getElementById('appContent');
+            let progress = 0;
+
+            const timer = setInterval(() => {
+                progress += Math.floor(Math.random() * 20) + 10;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(timer);
+                    screen.classList.add('fade-out');
+                    app.style.opacity = '1';
+                }
+                bar.style.width = progress + '%';
+            }, 40);
+        }
+
+        function openServer(id) {
+            const srv = appConfig.servers.find(s => s.id === id);
+            if (!srv) return;
+
+            const modal = document.getElementById('connectingModal');
+            document.getElementById('connectingTitle').innerText = `Connecting to ${srv.name}...`;
+            modal.classList.add('active');
+
+            setTimeout(() => {
+                modal.classList.remove('active');
+                showBrowser(srv.PRIVATE_SERVER_URL, srv.FAKE_URL_DISPLAY);
+            }, 300);
+        }
+
+        function showBrowser(targetUrl, displayUrl) {
+            const browserModal = document.getElementById('browserModal');
+            const iframe = document.getElementById('browserIframe');
+            const urlText = document.getElementById('browserUrlText');
+
+            urlText.innerText = displayUrl;
+            iframe.src = targetUrl;
+            browserModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeBrowserModal() {
+            const browserModal = document.getElementById('browserModal');
+            const iframe = document.getElementById('browserIframe');
+            browserModal.classList.remove('active');
+            document.body.style.overflow = '';
+            iframe.src = 'about:blank';
+        }
+
+        // Real-time live player simulation loop
+        setInterval(() => {
+            let total = 0;
+            appConfig.servers.forEach(srv => {
+                const delta = Math.floor(Math.random() * 3) - 1;
+                srv.currentPlayers += delta;
+                if (srv.currentPlayers < 10) srv.currentPlayers = 10;
+                if (srv.currentPlayers > srv.maxPlayers) srv.currentPlayers = maxPlayers = srv.maxPlayers;
+                total += srv.currentPlayers;
+
+                const counterEl = document.getElementById(`counter-${srv.id}`);
+                if (counterEl) {
+                    counterEl.innerText = `${srv.currentPlayers} / ${srv.maxPlayers} Players`;
+                }
+            });
+            const onlineCountEl = document.getElementById('onlineCount');
+            const totalActiveEl = document.getElementById('totalActivePlayers');
+            if (onlineCountEl) onlineCountEl.innerText = total;
+            if (totalActiveEl) totalActiveEl.innerText = total;
+        }, 3000);
+    </script>
+</body>
+</html>
